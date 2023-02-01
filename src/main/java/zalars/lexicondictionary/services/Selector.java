@@ -15,6 +15,15 @@ public class Selector {
         this.dictionary = dictionary;
     }
 
+    public String testAvailability() {
+        if (this.dictionary.isAvailableAfterLoading()) {
+            return "PASSED";
+        } else {
+            return "FAILED какая-то проблема с файлом словаря (RusVocHtml.txt) - " +
+                    "он должен находиться рядом с jar-файлом приложения";
+        }
+    }
+
     public String makeSelectionBy(Integer wordLength) {
         // отбор в массив слов нужной длины
         final String[] wordsOfSameLength = this.dictionary.readAllWords().stream()

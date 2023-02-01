@@ -16,8 +16,12 @@ public class WordProvider {
         this.selector = selector;
     }
 
-    @GetMapping("/{wordLength}")
-    public String provideByLength(@PathVariable Integer wordLength) {
-        return this.selector.makeSelectionBy(wordLength);
+    @GetMapping("/{requestValue}")
+    public String provideByLength(@PathVariable Integer requestValue) {
+        if (requestValue > 0) {
+            return this.selector.makeSelectionBy(requestValue);
+        } else {
+            return this.selector.testAvailability();  // "PASSED" или "FAILED"
+        }
     }
 }
