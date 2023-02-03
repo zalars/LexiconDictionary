@@ -18,11 +18,13 @@ public class Dictionary {
     private static final int DEFINITION = 1;
 
     private final ConcurrentMap<String, String[]> records;  // <слово, [хэш, определение]>
+
     public Dictionary() {
         this.records = new ConcurrentHashMap<>(48752, 1, 1);
+        loadRecords();
     }
 
-    public boolean isAvailableAfterLoading() {
+    private void loadRecords() {
         try {
             BufferedReader fileReader = new BufferedReader(
                     new FileReader("RusVocHtml.txt", StandardCharsets.UTF_8));
@@ -32,12 +34,14 @@ public class Dictionary {
                 // индекс: 0 - слово, 1 - хэш, 2 - определение
                 this.records.put(singleRecord[0], new String[] {singleRecord[1], singleRecord[2]});
             }
-            return true;
         } catch (IOException e) {
             System.err.println("ERROR: Какая-то проблема с файлом словаря (RusVocHtml.txt) - " +
                     "он должен находиться рядом с jar-файлом приложения");
-            return false;
         }
+    }
+
+    public boolean isLoaded() {
+        return this.records.size() > 0;
     }
 
     public String readDefinitionOf(String word) {

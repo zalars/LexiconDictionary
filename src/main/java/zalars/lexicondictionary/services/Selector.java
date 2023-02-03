@@ -12,23 +12,22 @@ public class Selector {
     private final Dictionary dictionary;
 
     public Selector(Dictionary dictionary) {
-        this.dictionary = dictionary;
-    }
-
-    public String testAvailability() {
-        if (this.dictionary.isAvailableAfterLoading()) {
-            return "PASSED";
-        } else {
-            return "FAILED какая-то проблема с файлом словаря (RusVocHtml.txt) - " +
-                    "он должен находиться рядом с jar-файлом приложения";
-        }
+        this.dictionary = dictionary.isLoaded() ? dictionary : null;
     }
 
     public String makeSelectionBy(Integer wordLength) {
         // отбор в массив слов нужной длины
-        final String[] wordsOfSameLength = this.dictionary.readAllWords().stream()
-                .filter(w -> w.length() == wordLength)
-                .toArray(String[]::new);
+        final String[] wordsOfSameLength;
+        try {
+            wordsOfSameLength = this.dictionary.readAllWords()
+                                               .stream()
+                                               .filter(w -> w.length() == wordLength)
+                                               .toArray(String[]::new);
+            // если словарь не загружен (проблема с файлом словаря)
+        } catch (NullPointerException e) {
+            new Thread(new ShutdownWithDelayInMs(3000)).start();
+            return "ERROR:3";
+        }
         String source;
         String allDerivedWithDefinitions;
         do {
