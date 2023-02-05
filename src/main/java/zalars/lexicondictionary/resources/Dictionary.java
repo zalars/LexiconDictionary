@@ -25,9 +25,8 @@ public class Dictionary {
     }
 
     private void loadRecords() {
-        try {
-            BufferedReader fileReader = new BufferedReader(
-                    new FileReader("RusVocHtml.txt", StandardCharsets.UTF_8));
+        try (BufferedReader fileReader = new BufferedReader(
+                new FileReader("RusVocHtml.txt", StandardCharsets.UTF_8))) {
             String fileLine;
             while ((fileLine = fileReader.readLine()) != null) {
                 String[] singleRecord = fileLine.split("@");

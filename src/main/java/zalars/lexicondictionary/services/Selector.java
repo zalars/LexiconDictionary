@@ -23,7 +23,7 @@ public class Selector {
                                                .stream()
                                                .filter(w -> w.length() == wordLength)
                                                .toArray(String[]::new);
-            // если словарь не загружен (проблема с файлом словаря)
+            // будет NPE, если словарь не загружен (проблема с файлом словаря)
         } catch (NullPointerException e) {
             new Thread(new ShutdownWithDelayInMs(3000)).start();
             return "ERROR:3";
@@ -34,7 +34,6 @@ public class Selector {
             source = wordsOfSameLength[new Random().nextInt(wordsOfSameLength.length)];
             allDerivedWithDefinitions = getAllDerivedWithDefinitions(source);
         } while (allDerivedWithDefinitions.isEmpty());
-
         return getWordWithDefinition(source) + "@@" + allDerivedWithDefinitions;
     }
 
@@ -44,19 +43,18 @@ public class Selector {
 
     private String getAllDerivedWithDefinitions(String source) {
         BigInteger sourceHash = new BigInteger(this.dictionary.readHashOf(source));
-        StringBuilder resultSet = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         int sourceHashSize = sourceHash.toString().length();
-
         for (String word : this.dictionary.readAllWords()) {
             BigInteger wordHash = new BigInteger(this.dictionary.readHashOf(word));
             if (wordHash.toString().length() > sourceHashSize || source.equals(word)) {
                 continue;
             }
             if (sourceHash.remainder(wordHash).equals(BigInteger.ZERO)) {
-                resultSet.append(getWordWithDefinition(word));
-                resultSet.append("@@");
+                result.append(getWordWithDefinition(word));
+                result.append("@@");
             }
         }
-        return resultSet.toString();
+        return result.toString();
     }
 }

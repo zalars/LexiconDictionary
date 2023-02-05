@@ -10,10 +10,10 @@ public class ShutdownWithDelayInMs implements Runnable {
 
     @Override
     public void run() {
-        stopProgramWithDelay(this.delay);
+        stopProgramWith(this.delay);
     }
 
-    private void stopProgramWithDelay(long delay) {
+    private void stopProgramWith(long delay) {
         try {
             Thread.sleep(delay);
         } catch (InterruptedException ignored) {  }
