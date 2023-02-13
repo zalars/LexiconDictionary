@@ -16,7 +16,10 @@ public class ShutdownWithDelayInMs implements Runnable {
     private void stopProgramWith(long delay) {
         try {
             Thread.sleep(delay);
-        } catch (InterruptedException ignored) {  }
-        throw new RuntimeException("Проблема с файлом словаря [метод Dictionary.loadRecords()]");
+        } catch (InterruptedException ignored) { }
+
+        System.err.println("ERROR [в методе Dictionary.loadFrom()]: Какая-то проблема с файлом словаря" +
+                " (RusVocHtml.txt) - он должен находиться рядом с jar-файлом приложения");
+        System.exit(1);
     }
 }

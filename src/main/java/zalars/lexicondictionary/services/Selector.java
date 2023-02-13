@@ -12,7 +12,7 @@ public class Selector {
     private final Dictionary dictionary;
 
     public Selector(Dictionary dictionary) {
-        this.dictionary = dictionary.isLoaded() ? dictionary : null;
+        this.dictionary = dictionary.getRecords() == null ? null : dictionary;
     }
 
     public String makeSelectionBy(Integer wordLength) {
@@ -23,13 +23,12 @@ public class Selector {
                                                .stream()
                                                .filter(w -> w.length() == wordLength)
                                                .toArray(String[]::new);
-            // будет NPE, если словарь не загружен (проблема с файлом словаря)
+            // NPE, если словарь не загружен (проблема с файлом словаря), т.е. равен null
         } catch (NullPointerException e) {
             new Thread(new ShutdownWithDelayInMs(3000)).start();
             return "ERROR:3";
         }
-        String source;
-        String allDerivedWithDefinitions;
+        String source, allDerivedWithDefinitions;
         do {
             source = wordsOfSameLength[new Random().nextInt(wordsOfSameLength.length)];
             allDerivedWithDefinitions = getAllDerivedWithDefinitions(source);

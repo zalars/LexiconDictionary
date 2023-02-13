@@ -20,27 +20,28 @@ public class Dictionary {
     private final ConcurrentMap<String, String[]> records;  // <слово, [хэш, определение]>
 
     public Dictionary() {
-        this.records = new ConcurrentHashMap<>(48752, 1, 1);
-        loadRecords();
+        String fileName = "RusVocHtml.txt";
+        this.records = loadFrom(fileName);
     }
 
-    private void loadRecords() {
-        try (BufferedReader fileReader = new BufferedReader(
-                new FileReader("RusVocHtml.txt", StandardCharsets.UTF_8))) {
+    private ConcurrentMap<String, String[]> loadFrom(String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName, StandardCharsets.UTF_8))) {
+            ConcurrentMap<String, String[]> initialRecords =
+                    new ConcurrentHashMap<>(48752, 1, 1);
             String fileLine;
-            while ((fileLine = fileReader.readLine()) != null) {
+            while ((fileLine = reader.readLine()) != null) {
                 String[] singleRecord = fileLine.split("@");
                 // индекс: 0 - слово, 1 - хэш, 2 - определение
-                this.records.put(singleRecord[0], new String[] {singleRecord[1], singleRecord[2]});
+                initialRecords.put(singleRecord[0], new String[] {singleRecord[1], singleRecord[2]});
             }
-        } catch (IOException e) {
-            System.err.println("ERROR: Какая-то проблема с файлом словаря (RusVocHtml.txt) - " +
-                    "он должен находиться рядом с jar-файлом приложения");
+            return initialRecords;
+        } catch (IOException | NullPointerException e) {
+            return null;
         }
     }
 
-    public boolean isLoaded() {
-        return this.records.size() > 0;
+    public ConcurrentMap<String, String[]> getRecords() {
+        return this.records;
     }
 
     public String readDefinitionOf(String word) {
