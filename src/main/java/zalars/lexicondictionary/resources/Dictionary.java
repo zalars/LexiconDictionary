@@ -13,10 +13,6 @@ import java.util.concurrent.ConcurrentMap;
 @Component
 public class Dictionary {
 
-    // столбцы в массиве value (в мэпе)
-    private static final int HASH = 0;
-    private static final int DEFINITION = 1;
-
     private final ConcurrentMap<String, String[]> records;  // <слово, [хэш, определение]>
 
     public Dictionary() {
@@ -39,16 +35,18 @@ public class Dictionary {
             return null;
         }
     }
-
-    public ConcurrentMap<String, String[]> getRecords() {
-        return this.records;
+    
+    public boolean hasRecords() {
+        return this.records != null;
     }
 
     public String readDefinitionOf(String word) {
+        final int DEFINITION = 1;
         return this.records.get(word)[DEFINITION];
     }
 
     public String readHashOf(String word) {
+        final int HASH = 0;
         return this.records.get(word)[HASH];
     }
 

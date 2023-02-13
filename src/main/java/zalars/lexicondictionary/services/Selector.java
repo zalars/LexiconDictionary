@@ -12,7 +12,7 @@ public class Selector {
     private final Dictionary dictionary;
 
     public Selector(Dictionary dictionary) {
-        this.dictionary = dictionary.getRecords() == null ? null : dictionary;
+        this.dictionary = dictionary.hasRecords() ? dictionary : null;
     }
 
     public String makeSelectionBy(Integer wordLength) {
